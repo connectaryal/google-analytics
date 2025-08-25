@@ -28,7 +28,9 @@ export class GATracker extends GoogleAnalytics {
     });
   }
 
-  public async trackPageView(options: PageViewOptions = {}): Promise<void> {
+  public trackPageView = async (
+    options: PageViewOptions = {}
+  ): Promise<void> => {
     const { path, title, referrer } = options;
     const pageUrl = path ?? (isBrowser() ? window.location.href : null);
 
@@ -56,7 +58,7 @@ export class GATracker extends GoogleAnalytics {
 
     // The base class now handles queuing events until ready
     await this.trackEvent(event);
-  }
+  };
 
   public async trackCustomEvent(
     eventName: string,
@@ -67,12 +69,12 @@ export class GATracker extends GoogleAnalytics {
     return this.trackEvent(event);
   }
 
-  public async trackCart(
+  public trackCart = async (
     action: CartType,
     items: CartItem[] = [],
     value?: number,
     customParams: TEventParams = {}
-  ): Promise<void> {
+  ): Promise<void> => {
     if (!items.length) {
       throw new Error(`GA4: Cannot track ${action} with empty items`);
     }
@@ -107,7 +109,7 @@ export class GATracker extends GoogleAnalytics {
     return this.trackEvent(
       this.buildEvent(eventName, eventParams, EventCategory.ECOMMERCE)
     );
-  }
+  };
 
   public async trackBeginCheckout(
     value: number,

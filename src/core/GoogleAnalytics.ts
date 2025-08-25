@@ -75,18 +75,15 @@ export class GoogleAnalytics {
     return this.gtagLoadPromise;
   }
 
-  // Init dataLayer and gtag
   private configureGA(): void {
     window.dataLayer = window.dataLayer || [];
-    if (!window.gtag) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function gtag(...args: any) {
-        window.dataLayer.push(...args);
-      }
-      window.gtag = gtag;
+    function gtag() {
+      // @ts-ignore
+      window.dataLayer.push(arguments);
     }
-
+    window.gtag = gtag;
     window.gtag("js", new Date());
+
     window.gtag("config", this.config.measurementId);
 
     if (this.config.customConfig) {
