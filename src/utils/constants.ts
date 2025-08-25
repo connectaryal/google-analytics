@@ -36,6 +36,9 @@ export const GA_EVENTS = {
   TUTORIAL_COMPLETE: "tutorial_complete",
 
   // Ecommerce events
+  VIEW_ITEM: "view_item",
+  SELECT_ITEM: "select_item",
+  VIEW_ITEM_LIST: "view_item_list",
   PURCHASE: "purchase",
   REFUND: "refund",
   ADD_PAYMENT_INFO: "add_payment_info",
@@ -44,13 +47,15 @@ export const GA_EVENTS = {
   REMOVE_FROM_WISHLIST: "remove_from_wishlist",
   VIEW_WISHLIST: "view_wishlist",
   DELETE_WISHLIST: "delete_wishlist",
+  UPDATE_WISHLIST: "update_wishlist",
   BEGIN_CHECKOUT: "begin_checkout",
   GENERATE_LEAD: "generate_lead",
   ADD_TO_CART: "add_to_cart",
   VIEW_CART: "view_cart",
   UPDATE_CART: "update_cart",
   REMOVE_FROM_CART: "remove_from_cart",
-  VIEW_ITEM: "view_item",
+  VIEW_PROMOTION: "view_promotion",
+  SELECT_PROMOTION: "select_promotion",
 
   // Custom events (our additions)
   BUTTON_CLICK: "button_click",

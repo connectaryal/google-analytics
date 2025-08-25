@@ -76,6 +76,33 @@ export type CartItem = Pick<
 >;
 
 /* -------------------------------------------------
+ * Wishlist
+ * ------------------------------------------------- */
+export enum WishlistType {
+  ADD_TO_WISHLIST = "add_to_wishlist",
+  REMOVE_FROM_WISHLIST = "remove_from_wishlist",
+  VIEW_WISHLIST = "view_wishlist",
+  UPDATE_WISHLIST = "update_wishlist",
+}
+
+/* -------------------------------------------------
+ * Promotion
+ * ------------------------------------------------- */
+export enum PromotionType {
+  VIEW_PROMOTION = "view_promotion",
+  SELECT_PROMOTION = "select_promotion",
+}
+
+/* -------------------------------------------------
+ * Item
+ * ------------------------------------------------- */
+export enum ItemType {
+  VIEW_ITEM = "view_item",
+  SELECT_ITEM = "select_item",
+  VIEW_ITEM_LIST = "view_item_list",
+}
+
+/* -------------------------------------------------
  * Ecommerce Event Parameters
  * ------------------------------------------------- */
 export interface EcommerceEventParameters {

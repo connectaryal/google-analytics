@@ -1,13 +1,15 @@
-import { EventCategory } from "../utils/constants";
+import { EventCategory } from '../utils/constants';
+import { TEventParams } from './core';
+import { CartItem, ItemType } from './ecommerce';
 
 /**
  * Initialization state using const assertions for better performance
  */
 export const InitializationState = {
-  NOT_INITIALIZED: "NOT_INITIALIZED",
-  INITIALIZING: "INITIALIZING",
-  INITIALIZED: "INITIALIZED",
-  FAILED: "FAILED",
+  NOT_INITIALIZED: 'NOT_INITIALIZED',
+  INITIALIZING: 'INITIALIZING',
+  INITIALIZED: 'INITIALIZED',
+  FAILED: 'FAILED',
 } as const;
 
 export type InitializationState =
@@ -27,16 +29,16 @@ export interface GA4Config {
  * Currency type with common currencies for better IntelliSense
  */
 export type Currency =
-  | "USD"
-  | "EUR"
-  | "GBP"
-  | "JPY"
-  | "CAD"
-  | "AUD"
-  | "CHF"
-  | "CNY"
-  | "INR"
-  | "NPR";
+  | 'USD'
+  | 'EUR'
+  | 'GBP'
+  | 'JPY'
+  | 'CAD'
+  | 'AUD'
+  | 'CHF'
+  | 'CNY'
+  | 'INR'
+  | 'NPR';
 
 /**
  * PageView Options
@@ -56,4 +58,24 @@ export interface EventPayload {
   readonly event_category: EventCategory;
   readonly event_time: number;
   readonly [key: string]: unknown; // flexible extension
+}
+
+/**
+ * Shipping Info
+ *
+ */
+export interface TShippingInfo {
+  value: number;
+  coupon?: string;
+  shipping_tier: string;
+  items: CartItem[];
+}
+
+export interface TItem {
+  action: ItemType;
+  items: CartItem[];
+  item_list_id: string;
+  item_list_name: string;
+  value?: number;
+  customParams: TEventParams;
 }
