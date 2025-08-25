@@ -11,10 +11,7 @@ export function useGoogleAnalytics() {
     },
 
     // Engagement
-    trackEvent: (
-      eventName: GAEvent,
-      params?: Record<string, unknown>
-    ) => {
+    trackEvent: (eventName: GAEvent, params?: Record<string, unknown>) => {
       ga.trackEvent(eventName, params);
     },
 

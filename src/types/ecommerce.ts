@@ -279,5 +279,4 @@ export const ShoppingStage = {
   POST_PURCHASE: "post_purchase",
 } as const;
 
-export type ShoppingStage =
-  (typeof ShoppingStage)[keyof typeof ShoppingStage];
+export type ShoppingStage = (typeof ShoppingStage)[keyof typeof ShoppingStage];

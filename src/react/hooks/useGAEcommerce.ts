@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { CartType, CartItem, EcommerceItem } from '../../types/ecommerce';
-import { useAnalytics } from '../context/GAProvider';
+import { CartType, CartItem, EcommerceItem } from "../../types/ecommerce";
+import { useAnalytics } from "../context/GAProvider";
 
 export function useGAEcommerce() {
   const ga = useAnalytics();
@@ -12,7 +12,7 @@ export function useGAEcommerce() {
       action: CartType,
       items: CartItem[],
       value: number,
-      options?: Record<string, unknown>,
+      options?: Record<string, unknown>
     ) => {
       ga.trackCart(action, items, value, options);
     },
@@ -25,7 +25,7 @@ export function useGAEcommerce() {
         item_name: string;
         price: number;
         quantity: number;
-      }>,
+      }>
     ) => {
       ga.trackBeginCheckout(value, items);
     },
@@ -34,7 +34,7 @@ export function useGAEcommerce() {
     trackPurchase: (
       transactionId: string,
       value: number,
-      items: EcommerceItem[],
+      items: EcommerceItem[]
     ) => {
       ga.trackPurchase(transactionId, value, items);
     },

@@ -75,6 +75,7 @@ export class GoogleAnalytics {
     return this.gtagLoadPromise;
   }
 
+  // Init dataLayer and gtag
   private configureGA(): void {
     window.dataLayer = window.dataLayer || [];
     function gtag() {
@@ -120,8 +121,6 @@ export class GoogleAnalytics {
       console.error("GA4: Error tracking event", err);
       if (options.onError) queueMicrotask(() => options.onError!(err as Error));
     }
-
-    console.log(event, options);
   }
 
   public destroy(): void {
