@@ -1,6 +1,6 @@
 {
   "name": "@connectaryal/google-analytics",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "🚀 A modern, type-safe, and performance-optimized Google Analytics 4 (GA4) tracking library for React and Next.js applications. Features comprehensive ecommerce tracking, automatic event batching, SSR support, and production-ready error handling. Built with TypeScript for enterprise-grade reliability.",
   "main": "dist/index.js",
   "module": "dist/index.js",
