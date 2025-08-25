@@ -25,7 +25,7 @@ export const GAProvider: React.FC<GAProviderProps> = ({ config, children }) => {
     if (gaTrackerRef.current && !gaTrackerRef.current.isInitialized()) {
       gaTrackerRef.current.init();
     }
-  }, []); // Empty dependency array to run only once
+  }, [gaTrackerRef.current]);
 
   return (
     <GAContext.Provider value={gaTrackerRef.current}>
