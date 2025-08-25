@@ -1,0 +1,70 @@
+{
+  "name": "@connectaryal/google-analytics",
+  "version": "1.0.0",
+  "description": "🚀 A modern, type-safe, and performance-optimized Google Analytics 4 (GA4) tracking library for React and Next.js applications. Features comprehensive ecommerce tracking, automatic event batching, SSR support, and production-ready error handling. Built with TypeScript for enterprise-grade reliability.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.0.10",
+    "react": "^19.0.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "keywords": [
+    "react",
+    "next.js",
+    "nextjs",
+    "google-analytics",
+    "google-analytics-4",
+    "ga4",
+    "gtag",
+    "analytics",
+    "tracking",
+    "ecommerce",
+    "ecommerce-tracking",
+    "enhanced-ecommerce",
+    "typescript",
+    "type-safe",
+    "web-vitals",
+    "conversion-tracking",
+    "event-tracking",
+    "page-tracking",
+    "measurement-protocol"
+  ],
+  "author": {
+    "name": "Shiva Aryal",
+    "email": "aryalshiva005@gmail.com",
+    "url": "https://github.com/connectaryal"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/connectaryal/google-analytics"
+  },
+  "bugs": {
+    "url": "https://github.com/connectaryal/google-analytics/issues"
+  },
+  "homepage": "https://github.com/connectaryal/google-analytics#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "sideEffects": false
+}
