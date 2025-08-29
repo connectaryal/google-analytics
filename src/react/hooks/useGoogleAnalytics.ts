@@ -11,6 +11,7 @@ export function useGoogleAnalytics() {
     trackShare,
     trackVideoPlay,
     trackException,
+    trackFormSubmission,
   } = useAnalytics();
 
   return {
@@ -23,5 +24,6 @@ export function useGoogleAnalytics() {
     trackShare,
     trackVideoPlay,
     trackException,
+    trackFormSubmission,
   };
 }
