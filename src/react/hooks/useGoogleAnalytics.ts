@@ -1,4 +1,4 @@
-import { useAnalytics } from '../context/GAProvider';
+import { useAnalytics } from "../context/GAProvider";
 
 export function useGoogleAnalytics() {
   const {

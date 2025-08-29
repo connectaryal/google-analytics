@@ -53,7 +53,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/connectaryal/google-analytics"
+    "url": "git+https://github.com/connectaryal/google-analytics.git"
   },
   "bugs": {
     "url": "https://github.com/connectaryal/google-analytics/issues"

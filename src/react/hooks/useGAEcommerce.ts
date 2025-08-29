@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useAnalytics } from '../context/GAProvider';
+import { useAnalytics } from "../context/GAProvider";
 
 export function useGAEcommerce() {
   const {
