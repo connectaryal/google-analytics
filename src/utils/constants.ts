@@ -62,7 +62,7 @@ export const GA_EVENTS = {
   FORM_START: "form_start",
   FORM_SUBMIT: "form_submit",
   CONTACT: "contact",
-  ERROR: "exception",
+  EXCEPTION: "exception",
 } as const;
 
 /**
