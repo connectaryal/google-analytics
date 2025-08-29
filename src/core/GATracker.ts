@@ -843,6 +843,40 @@ export class GATracker extends GoogleAnalytics {
   };
 
   /**
+   * Tracks a form submission event with Google Analytics.
+   *
+   * This method captures form submission data and sends it to GA as a conversion event.
+   * The form data is automatically serialized and included in the event parameters.
+   *
+   * @param options - The form submission tracking options
+   * @param options.formId - Unique identifier for the form being submitted
+   * @param options.formData - Key-value pairs representing the form field data
+   * @param options.customParams - Optional additional parameters to include with the event
+   * @returns A promise that resolves when the form submission event has been tracked
+   */
+  public trackFormSubmission = async ({
+    formId,
+    formData,
+    customParams = {},
+  }: {
+    formId: string;
+    formData: Record<string, any>;
+    customParams?: TEventParams;
+  }): Promise<void> => {
+    return this.trackEvent(
+      this.buildEvent({
+        name: GA_EVENTS.FORM_SUBMIT,
+        params: {
+          form_id: formId,
+          form_data: formData,
+          ...customParams,
+        },
+        category: EventCategory.CONVERSION,
+      })
+    );
+  };
+
+  /**
    * Tracks a timing event in Google Analytics.
    *
    * @param category - The category of the timing event (e.g., 'Load', 'Render').
