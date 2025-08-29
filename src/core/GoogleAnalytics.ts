@@ -5,7 +5,7 @@ import { isGtagAvailable } from "../utils/validation";
 export class GoogleAnalytics {
   protected readonly config: Readonly<GA4Config> = {
     measurementId: "",
-    debug: process.env.NODE_ENV === "development",
+    debug: process.env.NODE_ENV === "development" || false,
     currency: "USD",
   };
   private initializationState: InitializationState = "NOT_INITIALIZED";
@@ -85,7 +85,9 @@ export class GoogleAnalytics {
     window.gtag = gtag;
     window.gtag("js", new Date());
 
-    window.gtag("config", this.config.measurementId);
+    window.gtag("config", this.config.measurementId, {
+      debug_mode: this.config.debug,
+    });
 
     if (this.config.customConfig) {
       window.gtag("consent", "default", this.config.customConfig);
