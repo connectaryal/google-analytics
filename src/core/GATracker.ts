@@ -100,11 +100,15 @@ export class GATracker extends GoogleAnalytics {
    * @param category - The category of the event. Defaults to `EventCategory.CUSTOM`.
    * @returns A promise that resolves when the event has been tracked.
    */
-  public trackCustomEvent = async (
-    name: string,
-    params: TEventParams = {},
-    category = EventCategory.CUSTOM
-  ): Promise<void> => {
+  public trackCustomEvent = async ({
+    name,
+    params = {},
+    category = EventCategory.CUSTOM,
+  }: {
+    name: string;
+    params?: TEventParams;
+    category?: EventCategory;
+  }): Promise<void> => {
     const event = this.buildEvent({
       name,
       params,
@@ -211,7 +215,7 @@ export class GATracker extends GoogleAnalytics {
     action: CartType;
     items: CartItem[];
     value: number;
-    customParams: TEventParams;
+    customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
       throw new Error(`GA4: Cannot track ${action} with empty items`);
