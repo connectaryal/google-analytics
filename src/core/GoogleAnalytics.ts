@@ -19,6 +19,7 @@ export class GoogleAnalytics {
     measurementId: "",
     debug: process.env.NODE_ENV === "development" || false,
     currency: "USD",
+    disableGA: false,
   };
 
   /**
@@ -64,6 +65,8 @@ export class GoogleAnalytics {
    * @private
    */
   private validateConfig(): void {
+    if (this.config.disableGA) return;
+
     if (!this.config.measurementId) {
       throw new Error("GA4 measurementId is required");
     }
@@ -207,6 +210,8 @@ export class GoogleAnalytics {
    * @returns `true` if the Google Analytics instance is initialized or if gtag is globally available, `false` otherwise
    */
   public isInitialized(): boolean {
+    if (this.config.disableGA) return true; // if GA is disabled, consider it initialized
+
     return this.initializationState === "INITIALIZED" || isGtagAvailable();
   }
 
@@ -254,6 +259,8 @@ export class GoogleAnalytics {
     event: GAEvent,
     options: TrackingOptions = {}
   ): Promise<void> {
+    if (this.config.disableGA) return;
+
     if (!isGtagAvailable()) {
       console.warn("GA4: gtag not available");
       return;

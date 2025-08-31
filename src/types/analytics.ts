@@ -23,6 +23,7 @@ export interface GA4Config {
   readonly debug?: boolean;
   readonly customConfig?: Readonly<Record<string, unknown>>;
   readonly currency?: Currency;
+  readonly disableGA?: boolean;
 }
 
 /**
