@@ -6,6 +6,7 @@ export { GATracker } from './core/GATracker';
 export { GAProvider, useAnalytics } from './react/context/GAProvider';
 export { useGoogleAnalytics } from './react/hooks/useGoogleAnalytics';
 export { useGAEcommerce } from './react/hooks/useGAEcommerce';
+export { useGAAuth } from './react/hooks/useGAAuth';
 
 // types
 export * from './types/analytics';
