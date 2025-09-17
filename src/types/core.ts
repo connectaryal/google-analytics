@@ -50,7 +50,6 @@ export interface BaseGAEvent<TParams = TEventParams> {
   readonly event_name: GAEventName;
   readonly event_parameters?: TParams;
   readonly custom_parameters?: Record<string, unknown>;
-  readonly timestamp?: number;
   readonly event_category?: EventCategory;
 }
 
@@ -205,77 +204,10 @@ export type GAEvent =
  * ------------------------------------------------- */
 export interface TrackingOptions {
   readonly immediate?: boolean;
-  readonly timestamp?: number;
   readonly customParameters?: Record<string, unknown>;
   readonly debug?: boolean;
   readonly callback?: () => void;
   readonly onError?: (error: Error) => void;
   readonly forceTrack?: boolean;
   readonly transport?: "beacon" | "xhr" | "image";
-}
-
-/* -------------------------------------------------
- * Consent Config
- * ------------------------------------------------- */
-export interface ConsentConfig {
-  readonly analytics_storage?: ConsentState;
-  readonly ad_storage?: ConsentState;
-  readonly ad_user_data?: ConsentState;
-  readonly ad_personalization?: ConsentState;
-  readonly functionality_storage?: ConsentState;
-  readonly personalization_storage?: ConsentState;
-  readonly security_storage?: ConsentState;
-  readonly wait_for_update?: number;
-}
-
-/* -------------------------------------------------
- * User Properties
- * ------------------------------------------------- */
-export interface UserProperties {
-  readonly user_id?: string;
-  readonly customer_id?: string;
-  readonly customer_type?: "new" | "returning" | "vip";
-  readonly user_category?: string;
-  readonly subscription_status?: "free" | "premium" | "enterprise";
-  readonly language?: string;
-  readonly country?: string;
-  readonly region?: string;
-  readonly city?: string;
-  readonly age_group?: string;
-  readonly gender?: "male" | "female" | "other" | "prefer_not_to_say";
-  readonly interests?: readonly string[];
-  readonly device_category?: "mobile" | "tablet" | "desktop";
-  readonly browser?: string;
-  readonly os?: string;
-  readonly campaign_source?: string;
-  readonly campaign_medium?: string;
-  readonly campaign_name?: string;
-  readonly campaign_term?: string;
-  readonly campaign_content?: string;
-}
-
-/* -------------------------------------------------
- * Event Queue Item
- * ------------------------------------------------- */
-type RetryCount = number & { __brand: "RetryCount" };
-
-export interface QueuedEvent {
-  readonly event: GAEvent;
-  readonly options: TrackingOptions;
-  readonly timestamp: number;
-  readonly retryCount: RetryCount;
-}
-
-/* -------------------------------------------------
- * Tracker Config
- * ------------------------------------------------- */
-export interface TrackerConfig {
-  readonly batchSize?: number; // default: 20
-  readonly batchTimeout?: number; // default: 5000ms
-  readonly maxRetries?: number; // default: 3
-  readonly retryDelay?: number; // default: 2000ms
-  readonly enableBatching?: boolean; // default: true
-  readonly enableAutoRetry?: boolean; // default: true
-  readonly enableOfflineQueue?: boolean; // default: true
-  readonly maxQueueSize?: number; // default: 100
 }

@@ -270,7 +270,6 @@ export class GoogleAnalytics {
       const eventData = {
         ...event.event_parameters,
         ...options.customParameters,
-        ...(event.timestamp && { event_timestamp: event.timestamp }),
       };
 
       window.gtag("event", event.event_name, eventData);

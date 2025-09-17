@@ -38,7 +38,6 @@ export class GATracker extends GoogleAnalytics {
     return Object.freeze({
       event_name: name,
       event_parameters: params,
-      timestamp: Date.now(),
       event_category: category,
     });
   };
