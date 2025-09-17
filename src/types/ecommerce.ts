@@ -11,7 +11,7 @@ export interface EcommerceTrackingOptions {
   readonly shipping?: number;
   readonly currency?: Currency;
   readonly tax?: number;
-  readonly payment_type?: string;
+  readonly payment_method?: string;
   readonly customParams?: Record<string, unknown>;
 }
 
