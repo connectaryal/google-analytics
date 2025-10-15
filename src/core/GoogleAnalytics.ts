@@ -151,6 +151,11 @@ export class GoogleAnalytics {
   public async loadGoogleAnalytics(): Promise<void> {
     if (this.isInitialized()) return Promise.resolve();
 
+    // if the specific script is already loading, return the existing promise
+    if (this.gtagLoadPromise) {
+      return this.gtagLoadPromise;
+    }
+
     const { measurementId } = this.config;
 
     this.gtagLoadPromise = new Promise<void>((resolve, reject) => {
@@ -210,7 +215,7 @@ export class GoogleAnalytics {
    * @returns `true` if the Google Analytics instance is initialized or if gtag is globally available, `false` otherwise
    */
   public isInitialized(): boolean {
-    if (this.config.disableGA) return true; // if GA is disabled, consider it initialized
+    if (this.config.disableGA || typeof window === "undefined") return true; // if GA is disabled or server side, consider it initialized
 
     return this.initializationState === "INITIALIZED" || isGtagAvailable();
   }
