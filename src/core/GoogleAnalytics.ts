@@ -99,7 +99,7 @@ export class GoogleAnalytics {
    * ```
    */
   public async init(): Promise<void> {
-    if (this.isInitialized()) return Promise.resolve();
+    if (this.isInitialized()) return;
 
     if (this.initializationState === "INITIALIZING") {
       return this.gtagLoadPromise ?? Promise.resolve();
@@ -110,15 +110,13 @@ export class GoogleAnalytics {
     try {
       await this.loadGoogleAnalytics();
       this.initializationState = "INITIALIZED";
-      return Promise.resolve();
+      return;
     } catch (error) {
       this.initializationState = "FAILED";
-      return Promise.reject(
-        new Error(
-          `GA4 initialization failed: ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`
-        )
+      throw new Error(
+        `GA4 initialization failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
       );
     }
   }
@@ -149,7 +147,7 @@ export class GoogleAnalytics {
    * ```
    */
   public async loadGoogleAnalytics(): Promise<void> {
-    if (this.isInitialized()) return Promise.resolve();
+    if (this.isInitialized()) return;
 
     // if the specific script is already loading, return the existing promise
     if (this.gtagLoadPromise) {
@@ -267,7 +265,9 @@ export class GoogleAnalytics {
     if (this.config.disableGA) return;
 
     if (!isGtagAvailable()) {
-      console.warn("GA4: gtag not available");
+      if (this.config.debug) {
+        console.warn("GA4: gtag not available", event.event_name);
+      }
       return;
     }
 
@@ -279,7 +279,9 @@ export class GoogleAnalytics {
 
       window.gtag("event", event.event_name, eventData);
     } catch (err) {
-      console.error("GA4: Error tracking event", err);
+      if (this.config.debug) {
+        console.error("GA4: Error tracking event", err);
+      }
       if (options.onError) queueMicrotask(() => options.onError!(err as Error));
     }
   }

@@ -23,7 +23,11 @@ export const GAProvider: React.FC<GAProviderProps> = ({ config, children }) => {
   useEffect(() => {
     // Initialize only if not already initialized
     if (gaTrackerRef.current && !gaTrackerRef.current.isInitialized()) {
-      gaTrackerRef.current.init();
+      gaTrackerRef.current.init().catch((error) => {
+        if (config.debug) {
+          console.error("Failed to initialize GA Tracker:", error);
+        }
+      });
     }
   }, [gaTrackerRef.current]);
 

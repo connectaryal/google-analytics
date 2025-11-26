@@ -149,7 +149,10 @@ export class GATracker extends GoogleAnalytics {
     customParams: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track ${action} with empty items`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track ${action} with empty items`);
+      }
+      return;
     }
 
     const eventName = (() => {
@@ -217,11 +220,17 @@ export class GATracker extends GoogleAnalytics {
     customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track ${action} with empty items`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track ${action} with empty items`);
+      }
+      return;
     }
 
     if (!value) {
-      throw new Error(`GA4: Cannot track ${action} without value`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track ${action} without value`);
+      }
+      return;
     }
 
     const eventName = (() => {
@@ -283,11 +292,15 @@ export class GATracker extends GoogleAnalytics {
     customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track ${action} with empty items`);
+      if (this.config.debug)
+        console.error(`GA4: Cannot track ${action} with empty items`);
+      return;
     }
 
     if (value == null) {
-      throw new Error(`GA4: Cannot track ${action} without value`);
+      if (this.config.debug)
+        console.error(`GA4: Cannot track ${action} without value`);
+      return;
     }
 
     const eventName = (() => {
@@ -350,11 +363,17 @@ export class GATracker extends GoogleAnalytics {
     customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track shipping info with empty items`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track shipping info with empty items`);
+      }
+      return;
     }
 
     if (!value) {
-      throw new Error(`GA4: Cannot track shipping info without value`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track shipping info without value`);
+      }
+      return;
     }
 
     const eventParams: TEventParams = {
@@ -399,11 +418,17 @@ export class GATracker extends GoogleAnalytics {
     customParams?: TEventParams
   ): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track payment info with empty items`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track payment info with empty items`);
+      }
+      return;
     }
 
     if (!value) {
-      throw new Error(`GA4: Cannot track payment info without value`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track payment info without value`);
+      }
+      return;
     }
 
     const eventParams: TEventParams = {
@@ -496,7 +521,10 @@ export class GATracker extends GoogleAnalytics {
     customParams?: EcommerceTrackingOptions;
   }): Promise<void> => {
     if (!transactionId || value <= 0) {
-      throw new Error("GA4: Invalid purchase parameters");
+      if (this.config.debug) {
+        console.error("GA4: Invalid purchase parameters");
+      }
+      return;
     }
 
     const eventParams: TEventParams = {
@@ -542,8 +570,13 @@ export class GATracker extends GoogleAnalytics {
     items: EcommerceItem[];
     customParams?: TEventParams;
   }): Promise<void> => {
-    if (!transactionId || value <= 0)
-      throw new Error("GA4: Invalid refund parameters");
+    if (!transactionId || value <= 0) {
+      if (this.config.debug) {
+        console.error("GA4: Invalid refund parameters");
+      }
+
+      return;
+    }
 
     const eventParams: TEventParams = {
       transaction_id: transactionId,
@@ -585,7 +618,10 @@ export class GATracker extends GoogleAnalytics {
     options?: TEventParams;
   }): Promise<void> => {
     if (!searchTerm?.trim()) {
-      if (this.config.debug) console.warn("GA4: Search term is required");
+      if (this.config.debug) {
+        console.warn("GA4: Search term is required");
+      }
+
       return;
     }
     return this.trackEvent(
@@ -632,11 +668,19 @@ export class GATracker extends GoogleAnalytics {
     customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
-      throw new Error(`GA4: Cannot track ${action} with empty items`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track ${action} with empty items`);
+      }
+
+      return;
     }
 
     if (!creative_name) {
-      throw new Error(`GA4: Cannot track ${action} without creative_name`);
+      if (this.config.debug) {
+        console.error(`GA4: Cannot track ${action} without creative_name`);
+      }
+
+      return;
     }
 
     const eventName = (() => {
