@@ -1,6 +1,6 @@
 import { GA4Config, InitializationState } from "../types/analytics";
 import { GAEvent, TrackingOptions } from "../types/core";
-import { isGtagAvailable } from "../utils/validation";
+import { isBrowser, isGtagAvailable } from "../utils/validation";
 
 export class GoogleAnalytics {
   /**
@@ -99,6 +99,8 @@ export class GoogleAnalytics {
    * ```
    */
   public async init(): Promise<void> {
+    if (this.config.disableGA || !isBrowser()) return;
+
     if (this.isInitialized()) return;
 
     if (this.initializationState === "INITIALIZING") {
@@ -147,17 +149,31 @@ export class GoogleAnalytics {
    * ```
    */
   public async loadGoogleAnalytics(): Promise<void> {
+    if (!isBrowser()) return;
+
     if (this.isInitialized()) return;
 
-    // if the specific script is already loading, return the existing promise
     if (this.gtagLoadPromise) {
       return this.gtagLoadPromise;
     }
 
     const { measurementId } = this.config;
 
+    if (isGtagAvailable()) {
+      this.initializationState = "INITIALIZED";
+      return;
+    }
+
+    const scriptSelector = `script[src*="googletagmanager.com/gtag/js?id=${measurementId}"]`;
+    const existingScript =
+      document.querySelector<HTMLScriptElement>(scriptSelector);
+
+    if (existingScript) {
+      this.gtagLoadPromise = this.waitForScriptLoad(existingScript);
+      return this.gtagLoadPromise;
+    }
+
     this.gtagLoadPromise = new Promise<void>((resolve, reject) => {
-      // Load GA script
       const scriptTag = document.createElement("script");
       scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
       scriptTag.async = true;
@@ -177,6 +193,28 @@ export class GoogleAnalytics {
   }
 
   /**
+   * Waits for an existing GA script tag to finish loading.
+   * Used when the script was injected externally (e.g. Next.js Script).
+   */
+  private waitForScriptLoad(script: HTMLScriptElement): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.configureGA();
+
+      if (isGtagAvailable()) {
+        resolve();
+        return;
+      }
+
+      script.addEventListener("load", () => resolve(), { once: true });
+      script.addEventListener(
+        "error",
+        () => reject(new Error("Failed to load Google Analytics script")),
+        { once: true }
+      );
+    });
+  }
+
+  /**
    * Configures Google Analytics 4 (GA4) by initializing the global site tag (gtag) library.
    *
    * This method performs the following setup steps:
@@ -190,6 +228,8 @@ export class GoogleAnalytics {
    * @returns {void}
    */
   private configureGA(): void {
+    if (!isBrowser()) return;
+
     window.dataLayer = window.dataLayer || [];
     function gtag() {
       // @ts-ignore
@@ -213,7 +253,7 @@ export class GoogleAnalytics {
    * @returns `true` if the Google Analytics instance is initialized or if gtag is globally available, `false` otherwise
    */
   public isInitialized(): boolean {
-    if (this.config.disableGA || typeof window === "undefined") return true; // if GA is disabled or server side, consider it initialized
+    if (this.config.disableGA) return true;
 
     return this.initializationState === "INITIALIZED" || isGtagAvailable();
   }
@@ -262,7 +302,7 @@ export class GoogleAnalytics {
     event: GAEvent,
     options: TrackingOptions = {}
   ): Promise<void> {
-    if (this.config.disableGA) return;
+    if (this.config.disableGA || !isBrowser()) return;
 
     if (!isGtagAvailable()) {
       if (this.config.debug) {

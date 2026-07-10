@@ -14,22 +14,32 @@ export interface GAProviderProps {
 }
 
 export const GAProvider: React.FC<GAProviderProps> = ({ config, children }) => {
-  // Use useRef to ensure single instance creation across re-renders
   const gaTrackerRef = useRef<GATracker | null>(null);
+  const configRef = useRef(config);
 
-  // Only create instance once
-  gaTrackerRef.current ??= new GATracker(config);
+  // Create once; safe during SSR because GATracker does not touch the DOM in its constructor.
+  if (gaTrackerRef.current === null) {
+    gaTrackerRef.current = new GATracker(config);
+  }
+
+  configRef.current = config;
 
   useEffect(() => {
-    // Initialize only if not already initialized
-    if (gaTrackerRef.current && !gaTrackerRef.current.isInitialized()) {
-      gaTrackerRef.current.init().catch((error) => {
-        if (config.debug) {
-          console.error("Failed to initialize GA Tracker:", error);
-        }
-      });
-    }
-  }, [gaTrackerRef.current]);
+    const tracker = gaTrackerRef.current;
+    if (!tracker || tracker.isInitialized()) return;
+
+    let cancelled = false;
+
+    tracker.init().catch((error) => {
+      if (!cancelled && configRef.current.debug) {
+        console.error("Failed to initialize GA Tracker:", error);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <GAContext.Provider value={gaTrackerRef.current}>

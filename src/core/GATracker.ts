@@ -63,6 +63,8 @@ export class GATracker extends GoogleAnalytics {
     referrer,
     ...params
   }: PageViewOptions): Promise<void> => {
+    if (!isBrowser() && !path) return;
+
     const pageUrl = path ?? (isBrowser() ? window.location.href : null);
 
     // Check if path is available
