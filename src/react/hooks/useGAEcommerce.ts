@@ -1,33 +1,25 @@
 "use client";
 
+import { useMemo } from "react";
 import { useAnalytics } from "../context/GAProvider";
 
 export function useGAEcommerce() {
-  const {
-    trackCart,
-    trackBeginCheckout,
-    trackPurchase,
-    trackItem,
-    trackWishlist,
-    trackShippingInfo,
-    trackPaymentInfo,
-    trackRefund,
-    trackPromotion,
-    trackLogin,
-    trackSignUp,
-  } = useAnalytics();
+  const analytics = useAnalytics();
 
-  return {
-    trackCart,
-    trackBeginCheckout,
-    trackPurchase,
-    trackItem,
-    trackWishlist,
-    trackShippingInfo,
-    trackPaymentInfo,
-    trackRefund,
-    trackPromotion,
-    trackLogin,
-    trackSignUp,
-  };
+  return useMemo(
+    () => ({
+      trackCart: analytics.trackCart,
+      trackBeginCheckout: analytics.trackBeginCheckout,
+      trackPurchase: analytics.trackPurchase,
+      trackItem: analytics.trackItem,
+      trackWishlist: analytics.trackWishlist,
+      trackShippingInfo: analytics.trackShippingInfo,
+      trackPaymentInfo: analytics.trackPaymentInfo,
+      trackRefund: analytics.trackRefund,
+      trackPromotion: analytics.trackPromotion,
+      trackLogin: analytics.trackLogin,
+      trackSignUp: analytics.trackSignUp,
+    }),
+    [analytics]
+  );
 }

@@ -25,6 +25,8 @@ export const GAProvider: React.FC<GAProviderProps> = ({ config, children }) => {
   configRef.current = config;
 
   useEffect(() => {
+    if (configRef.current.disableGA) return;
+
     const tracker = gaTrackerRef.current;
     if (!tracker || tracker.isInitialized()) return;
 

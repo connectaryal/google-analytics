@@ -42,7 +42,11 @@ export type Currency =
   | "NPR";
 
 /**
- * PageView Options
+ * Page view tracking options.
+ *
+ * @remarks
+ * During SSR, pass explicit `path`, `title`, and `referrer` values from request
+ * metadata. Browser defaults are only resolved on the client.
  */
 export interface PageViewOptions {
   readonly path?: string;
@@ -66,17 +70,24 @@ export interface EventPayload {
  *
  */
 export interface TShippingInfo {
-  value: number;
-  coupon?: string;
-  shipping_tier: string;
-  items: CartItem[];
+  readonly value: number;
+  readonly coupon?: string;
+  readonly shipping_tier: string;
+  readonly items: CartItem[];
 }
 
-export interface TItem {
-  action: ItemType;
-  items: CartItem[];
-  item_list_id: string;
-  item_list_name: string;
-  value?: number;
-  customParams: TEventParams;
+/**
+ * Item tracking options.
+ *
+ * @remarks
+ * During SSR, pass explicit `item_list_id` and `item_list_name` values from request
+ * metadata. Browser defaults are only resolved on the client.
+ */
+export interface ItemTrackingOptions {
+  readonly action: ItemType;
+  readonly items: CartItem[];
+  readonly item_list_id?: string;
+  readonly item_list_name?: string;
+  readonly value?: number;
+  readonly customParams?: TEventParams;
 }

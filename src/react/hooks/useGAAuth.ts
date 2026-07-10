@@ -1,12 +1,16 @@
 "use client";
 
+import { useMemo } from "react";
 import { useAnalytics } from "../context/GAProvider";
 
 export function useGAAuth() {
-  const { trackLogin, trackSignUp } = useAnalytics();
+  const analytics = useAnalytics();
 
-  return {
-    trackLogin,
-    trackSignUp,
-  };
+  return useMemo(
+    () => ({
+      trackLogin: analytics.trackLogin,
+      trackSignUp: analytics.trackSignUp,
+    }),
+    [analytics]
+  );
 }

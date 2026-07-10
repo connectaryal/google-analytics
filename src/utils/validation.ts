@@ -8,6 +8,11 @@ export const isBrowser = (): boolean => {
 };
 
 /**
+ * Server environment detection (SSR, SSG, RSC)
+ */
+export const isServer = (): boolean => !isBrowser();
+
+/**
  * Check if gtag is available
  */
 export const isGtagAvailable = (): boolean => {

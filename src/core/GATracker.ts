@@ -61,7 +61,7 @@ export class GATracker extends GoogleAnalytics {
     path,
     title,
     referrer,
-    ...params
+    customParams = {},
   }: PageViewOptions): Promise<void> => {
     if (!isBrowser() && !path) return;
 
@@ -84,7 +84,7 @@ export class GATracker extends GoogleAnalytics {
         page_title: pageTitle,
         page_location: pageUrl,
         page_referrer: pageReferrer,
-        ...params,
+        ...customParams,
       },
       category: EventCategory.ENGAGEMENT,
     });
