@@ -89,7 +89,6 @@ export class GATracker extends GoogleAnalytics {
       category: EventCategory.ENGAGEMENT,
     });
 
-    // The base class now handles queuing events until ready
     await this.trackEvent(event);
   };
 
@@ -141,14 +140,14 @@ export class GATracker extends GoogleAnalytics {
     item_list_id,
     item_list_name,
     value,
-    customParams,
+    customParams = {},
   }: {
     action: ItemType;
     items: CartItem[];
     item_list_id?: string;
     item_list_name?: string;
     value?: number;
-    customParams: TEventParams;
+    customParams?: TEventParams;
   }): Promise<void> => {
     if (!items.length) {
       if (this.config.debug) {
@@ -172,8 +171,8 @@ export class GATracker extends GoogleAnalytics {
 
     const eventParams: TEventParams = {
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,
@@ -254,8 +253,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2),
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,
@@ -324,8 +323,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2),
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,
@@ -382,8 +381,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2),
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       shipping_tier,
@@ -437,8 +436,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2),
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       payment_type,
@@ -485,8 +484,8 @@ export class GATracker extends GoogleAnalytics {
             currency: this.config.currency,
             value: +value.toFixed(2),
             items: items.map((item) => ({
-              quantity: item.quantity || 1,
               ...item,
+              quantity: item.quantity || 1,
               price: +item.price.toFixed(2),
             })),
             ...customParams,
@@ -534,8 +533,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2), // Sum of (price * quantity) for all items.
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,
@@ -585,8 +584,8 @@ export class GATracker extends GoogleAnalytics {
       currency: this.config.currency,
       value: +value.toFixed(2), // Sum of (price * quantity) for all items.
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,
@@ -702,8 +701,8 @@ export class GATracker extends GoogleAnalytics {
       promotion_id,
       promotion_name,
       items: items.map((item) => ({
-        quantity: item.quantity || 1,
         ...item,
+        quantity: item.quantity || 1,
         price: +item.price.toFixed(2),
       })),
       ...customParams,

@@ -18,4 +18,4 @@ export * from "./utils/constants";
 export * from "./utils/validation";
 
 // Version
-export const version = "1.0.12";
+export const version = "1.0.14";
