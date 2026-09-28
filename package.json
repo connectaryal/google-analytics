@@ -38,7 +38,7 @@
     "tslib": "^2.8.1",
     "tsup": "^8.5.1",
     "typescript": "^7.0.2",
-    "vitest": "^3.2.7"
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
