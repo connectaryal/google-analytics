@@ -10,6 +10,8 @@ export function useGAAuth() {
     () => ({
       trackLogin: analytics.trackLogin,
       trackSignUp: analytics.trackSignUp,
+      setUserId: analytics.setUserId,
+      setUserProperties: analytics.setUserProperties,
     }),
     [analytics]
   );

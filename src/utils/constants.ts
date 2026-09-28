@@ -66,6 +66,42 @@ export const GA_EVENTS = {
 } as const;
 
 /**
+ * GA4 ecommerce event names. On the dataLayer transport these are pushed in
+ * Google's GTM ecommerce format (`{ ecommerce: null }` then `{ event, ecommerce }`).
+ * Events tracked with `EventCategory.ECOMMERCE` are treated the same way.
+ */
+export const GA_ECOMMERCE_EVENTS: ReadonlySet<string> = new Set([
+  GA_EVENTS.VIEW_ITEM_LIST,
+  GA_EVENTS.SELECT_ITEM,
+  GA_EVENTS.VIEW_ITEM,
+  GA_EVENTS.ADD_TO_CART,
+  GA_EVENTS.REMOVE_FROM_CART,
+  GA_EVENTS.VIEW_CART,
+  GA_EVENTS.UPDATE_CART,
+  GA_EVENTS.ADD_TO_WISHLIST,
+  GA_EVENTS.REMOVE_FROM_WISHLIST,
+  GA_EVENTS.VIEW_WISHLIST,
+  GA_EVENTS.UPDATE_WISHLIST,
+  GA_EVENTS.DELETE_WISHLIST,
+  GA_EVENTS.BEGIN_CHECKOUT,
+  GA_EVENTS.ADD_SHIPPING_INFO,
+  GA_EVENTS.ADD_PAYMENT_INFO,
+  GA_EVENTS.PURCHASE,
+  GA_EVENTS.REFUND,
+  GA_EVENTS.VIEW_PROMOTION,
+  GA_EVENTS.SELECT_PROMOTION,
+]);
+
+/**
+ * Google Tag Manager / Google tag endpoints
+ */
+export const GOOGLE_TAG_URLS = {
+  GTAG: "https://www.googletagmanager.com/gtag/js",
+  GTM: "https://www.googletagmanager.com/gtm.js",
+  GTM_NOSCRIPT: "https://www.googletagmanager.com/ns.html",
+} as const;
+
+/**
  * GA4 Parameter Names - Official parameter names
  * https://developers.google.com/analytics/devguides/collection/ga4/reference/events#shared_parameters
  */
@@ -295,6 +331,11 @@ export const SOCIAL_PLATFORMS = {
 export const ERROR_MESSAGES = {
   INVALID_MEASUREMENT_ID:
     "Invalid GA4 Measurement ID format. Expected format: G-XXXXXXXXXX",
+  INVALID_GTM_ID: "Invalid GTM container ID format. Expected format: GTM-XXXXXXX",
+  MISSING_TRACKING_ID:
+    "GA4 measurementId or GTM gtmId is required (or set disableGA: true)",
+  GTM_ID_AS_MEASUREMENT_ID:
+    "This is a GTM container ID. Pass it as `gtmId`, not `measurementId`.",
   TRACKER_NOT_INITIALIZED:
     "GA Tracker has not been initialized. Call initialize() first.",
   INVALID_EVENT_NAME: "Event name is required and must be a non-empty string",
@@ -314,7 +355,8 @@ export const ERROR_MESSAGES = {
  * Regular Expressions for Validation
  */
 export const VALIDATION_PATTERNS = {
-  MEASUREMENT_ID: /^G-[A-Z0-9]{10}$/,
+  MEASUREMENT_ID: /^G-[A-Z0-9]+$/,
+  GTM_ID: /^GTM-[A-Z0-9]+$/,
   CURRENCY_CODE: /^[A-Z]{3}$/,
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PHONE: /^\+?[\d\s\-\(\)]+$/,

@@ -1,6 +1,6 @@
 # @connectaryal/google-analytics
 
-> **Modern Google Analytics 4** - Type-safe, performance-optimized, production-ready React library.
+> **Modern Google Analytics 4 & Google Tag Manager** - Type-safe, performance-optimized, production-ready React library.
 
 [![npm version](https://badge.fury.io/js/@connectaryal%2Fgoogle-analytics.svg)](https://badge.fury.io/js/@connectaryal%2Fgoogle-analytics)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
@@ -16,6 +16,7 @@ Unlike other GA4 libraries, this one is **built for modern React applications** 
 - **100% Type Safe** - Full TypeScript support with intelligent autocomplete
 - **Performance Optimized** - Event batching, memory leak prevention, and automatic initialization
 - **Complete Ecommerce** - Enhanced ecommerce tracking with all GA4 events
+- **Google Tag Manager** - Load a GTM container (`gtmId`) and push every event to the dataLayer in GA4's GTM format
 - **React Hooks** - Modern React patterns with custom hooks
 - **No Script Conflicts** - Prevents duplicate GA script loading
 - **Debug Mode** - Development-friendly error reporting and validation
@@ -54,6 +55,8 @@ function App() {
   );
 }
 ```
+
+> Using Google Tag Manager instead? Pass `gtmId: "GTM-XXXXXXX"`. See [Google Tag Manager](#google-tag-manager).
 
 ### Using Analytics Hooks
 
@@ -228,6 +231,13 @@ trackSignUp({
     campaign: "summer_sale",
   },
 });
+
+// Attach a user ID (your own non-PII identifier) and user properties
+const { setUserId, setUserProperties } = useGAAuth();
+
+setUserId("user_123"); // gtag("set", { user_id }) or dataLayer.push({ user_id })
+setUserProperties({ plan: "pro" }); // gtag("set", "user_properties", …) or dataLayer.push({ user_properties })
+setUserId(null); // on logout
 ```
 
 ### Social Sharing
@@ -572,6 +582,147 @@ function App() {
 
 ---
 
+## Google Tag Manager
+
+Pass a GTM container ID as `gtmId` to load the container with `gtm.js`. This is Google's official GTM snippet, not the GA4 `gtag.js` tag. Every hook then pushes its events to `window.dataLayer`, and your container decides which tags fire.
+
+> **Migrating?** If you were passing `GTM-…` as `measurementId`, switch to `gtmId`. That setup loaded the Google tag instead of your container, never fired `gtm.js`, and sent a meaningless `gtag('config', 'GTM-…')`. In v1.2.0, passing a GTM ID as `measurementId` throws an error.
+
+### GTM only: React / Vite
+
+```tsx
+// main.tsx
+import { GAProvider } from "@connectaryal/google-analytics";
+
+createRoot(document.getElementById("root")!).render(
+  <GAProvider config={{ gtmId: "GTM-XXXXXXX" }}>
+    <App />
+  </GAProvider>
+);
+```
+
+In a client-only SPA, `GTMNoScript` can't help, because the page never renders without JavaScript. To support no-JS visitors, paste Google's `<noscript>` iframe into `index.html` right after `<body>`.
+
+### GTM only: Next.js App Router
+
+```tsx
+// app/layout.tsx
+import { GAProvider, GTMNoScript } from "@connectaryal/google-analytics";
+
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID!; // "GTM-XXXXXXX"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        {/* Must come right after the opening <body> tag */}
+        <GTMNoScript gtmId={GTM_ID} />
+        <GAProvider config={{ gtmId: GTM_ID }}>{children}</GAProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+`GAProvider` is a client component. Nothing touches `window` or `document` during server rendering, and `gtm.js` is injected after hydration. `GTMNoScript` renders:
+
+```html
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+```
+
+It accepts `gtmAuth` and `gtmPreview` for GTM environments, and renders nothing if `gtmId` isn't a valid `GTM-XXXXXXX` ID.
+
+### GTM options
+
+```tsx
+<GAProvider
+  config={{
+    gtmId: "GTM-XXXXXXX",
+    dataLayerName: "dataLayer", // custom name adds &l=<name> to gtm.js
+    gtmAuth: "aBcD123", // GTM environment: set both gtmAuth and gtmPreview
+    gtmPreview: "env-3",
+    nonce: cspNonce, // added to injected <script> tags
+    customConfig: {
+      // Consent Mode v2 defaults, pushed before gtm.js loads
+      ad_storage: "denied",
+      ad_user_data: "denied",
+      ad_personalization: "denied",
+      analytics_storage: "denied",
+    },
+  }}
+>
+```
+
+What happens on `init()`:
+
+1. `window[dataLayerName]` is created if missing.
+2. If `customConfig` is set, `gtag("consent", "default", customConfig)` is pushed as an `arguments` object, which is the form GTM's Consent Mode expects.
+3. `{ "gtm.start": Date.now(), event: "gtm.js" }` is pushed.
+4. `https://www.googletagmanager.com/gtm.js?id=GTM-XXXXXXX` is inserted as an async script.
+
+If a `gtm.js` script for the same container is already on the page, for example from a snippet in `index.html`, it isn't injected again and `gtm.js` isn't re-fired. In that case, put your consent defaults in the page before that snippet.
+
+### What gets pushed to the dataLayer
+
+| Call                              | dataLayer push                                                                          |
+| --------------------------------- | --------------------------------------------------------------------------------------- |
+| `trackCustomEvent({ name, params })` | `{ event: name, ...params }`                                                         |
+| `trackPage()`                     | `{ event: "page_view", page_path, page_title, page_location, page_referrer }`           |
+| Every `useGAEcommerce` event      | `{ ecommerce: null }`, then `{ event: name, ecommerce: { currency, value, items, … } }` |
+| `trackLogin` / `trackSignUp`      | `{ event: "login", method }` / `{ event: "sign_up", method }`                           |
+| `setUserId(id)`                   | `{ user_id: id }`                                                                       |
+| `setUserProperties(props)`        | `{ user_properties: props }`                                                            |
+
+Ecommerce events follow [Google's GA4 GTM ecommerce format](https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtm). The `{ ecommerce: null }` push stops the previous event's items from leaking into the next one.
+
+> GTM's data model keeps values from earlier pushes. A Data Layer Variable such as `value` still holds the last value that was pushed, even on a later event that didn't set it. Read event-specific values only in tags triggered by that event.
+
+### Setting up tags in the GTM UI
+
+**1. Google tag (GA4 base).** Tags → New → **Google Tag**. Tag ID: `G-XXXXXXXXXX`. Trigger: **Initialization - All Pages**.
+If you send page views yourself with `trackPage()`, add the configuration parameter `send_page_view` = `false` so page views aren't counted twice. To attach the user ID, add the configuration parameter `user_id` = `{{DLV - user_id}}`.
+
+**2. Data Layer Variables.** Variables → New → **Data Layer Variable**, one for each parameter you want to read, for example `page_location`, `page_title`, `method`, `user_id` or `user_properties.plan`. Use Data Layer Version 2.
+
+**3. Custom event tags.** Triggers → New → **Custom Event**, with the event name `cta_click`.
+Tags → New → **Google Analytics: GA4 Event**. Measurement ID: `G-XXXXXXXXXX`. Event name: `{{Event}}`. Add event parameters mapped to your Data Layer Variables, and attach the trigger.
+
+**4. Page views.** Add a Custom Event trigger for `page_view`. Then add a GA4 Event tag with the event name `page_view` and the parameters `page_location`, `page_title` and `page_referrer`, mapped to their Data Layer Variables.
+
+**5. Ecommerce.** Add a Custom Event trigger with **Use regex matching** turned on:
+
+```
+^(view_item_list|select_item|view_item|add_to_cart|remove_from_cart|view_cart|begin_checkout|add_shipping_info|add_payment_info|purchase|refund|view_promotion|select_promotion)$
+```
+
+Then add a GA4 Event tag with the event name `{{Event}}`. Under **More Settings → Ecommerce**, turn on **Send Ecommerce data** and set **Data source** to **Data Layer**. You don't need any item or value variables, because the tag reads the `ecommerce` object directly.
+
+Use **Preview** (Tag Assistant) to confirm each push fires the expected tag, then publish the container.
+
+### GA4 + GTM together
+
+Set both IDs to load `gtag.js` and `gtm.js` on the same dataLayer. For example, you might send GA4 through gtag while GTM manages ad and marketing tags.
+
+```tsx
+<GAProvider
+  config={{
+    measurementId: "G-XXXXXXXXXX",
+    gtmId: "GTM-XXXXXXX",
+    eventTransport: "gtag", // "gtag" | "dataLayer" | "both"
+  }}
+>
+```
+
+| `eventTransport`               | Events go to                                     | Use when                                                             |
+| ------------------------------ | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `"dataLayer"` (default with `gtmId`) | `window.dataLayer` only                    | Your GTM container sends the GA4 events                              |
+| `"gtag"` (default without `gtmId`)   | `window.gtag("event", …)` only             | gtag.js sends GA4, and GTM only handles other tags                  |
+| `"both"`                       | Both                                             | Other GTM tags (ads, pixels) need the same events that gtag sends to GA4 |
+
+> ⚠️ **Double counting.** When `measurementId` is set, gtag.js already sends GA4 hits for that property. If your GTM container also has a Google tag or GA4 Event tags for the **same** measurement ID, every page view and event is counted twice. Use **one** path per GA4 property. With `debug: true`, the library warns when both IDs are set.
+
+---
+
 ## Advanced Configuration
 
 ### Complete Configuration Options
@@ -905,14 +1056,39 @@ const cartItem: CartItem = {
 ### Configuration Options
 
 ```tsx
-interface GA4Config {
-  measurementId: string; // Required: GA4 Measurement ID
+interface GAConfig {
+  measurementId?: string; // GA4 Measurement ID (G-XXXXXXXXXX), loaded via gtag.js
+  gtmId?: string; // GTM container ID (GTM-XXXXXXX), loaded via gtm.js
+  dataLayerName?: string; // Default "dataLayer"
+  gtmAuth?: string; // GTM environment gtm_auth (requires gtmPreview)
+  gtmPreview?: string; // GTM environment gtm_preview, e.g. "env-3"
+  nonce?: string; // CSP nonce for injected scripts
+  eventTransport?: "gtag" | "dataLayer" | "both"; // Default: "dataLayer" with gtmId, else "gtag"
   debug?: boolean; // Enable debug logging
   currency?: Currency; // Default currency (USD, EUR, etc.)
-  customConfig?: Record<string, unknown>; // Custom gtag config
-  disableGA?: boolean; // Enable/Disable GA4
+  customConfig?: Record<string, unknown>; // Consent Mode defaults: gtag("consent", "default", …)
+  disableGA?: boolean; // Enable/Disable tracking
 }
+
+// `GA4Config` is still exported as an alias of `GAConfig`.
+// At least one of measurementId / gtmId is required unless disableGA is true.
 ```
+
+### Auth & User Methods (`useGAAuth`)
+
+| Method                | Description                  | Parameters                |
+| --------------------- | ---------------------------- | ------------------------- |
+| `setUserId()`         | Set or clear the GA4 user ID | `string \| null`          |
+| `setUserProperties()` | Set GA4 user properties      | `Record<string, string \| number \| boolean \| null>` |
+
+### Utilities
+
+| Export                                 | Description                                         |
+| -------------------------------------- | --------------------------------------------------- |
+| `GTMNoScript`                          | `<noscript>` iframe fallback for GTM                |
+| `isValidGtmId()` / `isValidMeasurementId()` | ID format validation                           |
+| `getDataLayer(name?)`                  | Returns `window[name]` if it's an array (SSR-safe) |
+| `buildGtmScriptUrl()` / `buildGtmNoScriptUrl()` | Build the official GTM URLs               |
 
 ---
 
@@ -998,6 +1174,17 @@ const { trackPage } = useGoogleAnalytics();
 trackPage();
 ```
 
+### From `measurementId: "GTM-…"` (v1.1 and earlier)
+
+If you were passing `GTM-…` as `measurementId`, switch to `gtmId`:
+
+```diff
+- <GAProvider config={{ measurementId: "GTM-XXXXXXX" }}>
++ <GAProvider config={{ gtmId: "GTM-XXXXXXX" }}>
+```
+
+Events now go to `window.dataLayer`, so you'll need GTM triggers and tags to forward them to GA4. See [Setting up tags in the GTM UI](#setting-up-tags-in-the-gtm-ui). Add `<GTMNoScript>` after `<body>` for no-JS visitors.
+
 ### From gtag directly
 
 ```tsx
@@ -1044,8 +1231,8 @@ npm run dev
 ### Running Tests
 
 ```bash
-npm test
-npm run test:coverage
+yarn test        # vitest + jsdom
+yarn type-check
 ```
 
 ---

@@ -29,5 +29,8 @@ jobs:
       - name: Run type checking
         run: yarn type-check
 
+      - name: Run tests
+        run: yarn test
+
       - name: Build package
         run: yarn build

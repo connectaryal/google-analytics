@@ -2,14 +2,14 @@
 
 import React, { createContext, useContext, useEffect, useRef } from "react";
 import GATracker from "../../core/GATracker";
-import type { GA4Config } from "../../types/analytics";
+import type { GAConfig } from "../../types/analytics";
 
 type GAContextType = GATracker | null;
 
 const GAContext = createContext<GAContextType>(null);
 
 export interface GAProviderProps {
-  config: GA4Config;
+  config: GAConfig;
   children: React.ReactNode;
 }
 

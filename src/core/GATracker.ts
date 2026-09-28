@@ -2,7 +2,7 @@ import { GoogleAnalytics } from "./GoogleAnalytics";
 import type { GAEvent, TEventParams } from "../types/core";
 import { EventCategory, GA_EVENTS } from "../utils/constants";
 import { isBrowser } from "../utils/validation";
-import { GA4Config, PageViewOptions } from "../types/analytics";
+import { GAConfig, PageViewOptions, UserProperties } from "../types/analytics";
 import {
   CartType,
   CartItem,
@@ -14,7 +14,7 @@ import {
 } from "../types/ecommerce";
 
 export class GATracker extends GoogleAnalytics {
-  constructor(config: Readonly<GA4Config>) {
+  constructor(config: Readonly<GAConfig>) {
     super(config);
   }
 
@@ -763,6 +763,32 @@ export class GATracker extends GoogleAnalytics {
         category: EventCategory.CONVERSION,
       })
     );
+  };
+
+  /**
+   * Sets the GA4 user ID for subsequent events; pass `null` to clear it (e.g. on logout).
+   *
+   * gtag transport: `gtag("set", { user_id })`.
+   * dataLayer transport: `dataLayer.push({ user_id })` — read it in GTM with a
+   * Data Layer Variable named `user_id`.
+   *
+   * @param userId - Your own non-PII identifier for the signed-in user, or `null`.
+   */
+  public setUserId = (userId: string | null): void => {
+    this.applyUserId(userId);
+  };
+
+  /**
+   * Sets GA4 user properties for subsequent events.
+   *
+   * gtag transport: `gtag("set", "user_properties", properties)`.
+   * dataLayer transport: `dataLayer.push({ user_properties: properties })` — read
+   * them in GTM with Data Layer Variables such as `user_properties.plan`.
+   *
+   * @param properties - Property name/value pairs; a `null` value clears that property.
+   */
+  public setUserProperties = (properties: UserProperties): void => {
+    this.applyUserProperties(properties);
   };
 
   /**

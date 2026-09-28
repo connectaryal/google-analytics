@@ -16,15 +16,55 @@ export type InitializationState =
   (typeof InitializationState)[keyof typeof InitializationState];
 
 /**
- * GA4 Configuration with performance-optimized defaults
+ * How tracked events are delivered.
+ *
+ * - `"gtag"` — `window.gtag("event", name, params)` (GA4 via gtag.js)
+ * - `"dataLayer"` — `window[dataLayerName].push({ event: name, ...params })` (GTM)
+ * - `"both"` — both of the above. If the GTM container also fires a GA4 tag for
+ *   the same property, every event is counted twice.
  */
-export interface GA4Config {
-  readonly measurementId: string;
+export type EventTransport = "gtag" | "dataLayer" | "both";
+
+/**
+ * Configuration for GA4 (gtag.js) and/or a Google Tag Manager container (gtm.js).
+ *
+ * At least one of `measurementId` or `gtmId` is required unless `disableGA` is set.
+ */
+export interface GAConfig {
+  /** GA4 measurement ID (`G-XXXXXXXXXX`), loaded via gtag.js. */
+  readonly measurementId?: string;
+  /** GTM container ID (`GTM-XXXXXXX`), loaded via gtm.js. */
+  readonly gtmId?: string;
+  /** Name of the global dataLayer array. Defaults to `"dataLayer"`. */
+  readonly dataLayerName?: string;
+  /** GTM environment `gtm_auth` parameter. */
+  readonly gtmAuth?: string;
+  /** GTM environment `gtm_preview` parameter (e.g. `"env-3"`). */
+  readonly gtmPreview?: string;
+  /** CSP nonce applied to injected `<script>` tags. */
+  readonly nonce?: string;
+  /**
+   * Event delivery. Defaults to `"dataLayer"` when `gtmId` is set, otherwise `"gtag"`.
+   */
+  readonly eventTransport?: EventTransport;
   readonly debug?: boolean;
+  /** Consent Mode defaults, pushed as `gtag("consent", "default", customConfig)`. */
   readonly customConfig?: Readonly<Record<string, unknown>>;
   readonly currency?: Currency;
   readonly disableGA?: boolean;
 }
+
+/**
+ * @deprecated Use {@link GAConfig}. Kept as an alias for backward compatibility.
+ */
+export type GA4Config = GAConfig;
+
+/**
+ * GA4 user properties. `null` clears a property.
+ */
+export type UserProperties = Readonly<
+  Record<string, string | number | boolean | null>
+>;
 
 /**
  * Currency type with common currencies for better IntelliSense

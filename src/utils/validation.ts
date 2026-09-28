@@ -1,4 +1,4 @@
-import { VALIDATION_PATTERNS, GA_LIMITS } from "./constants";
+import { VALIDATION_PATTERNS, GA_LIMITS, DEFAULT_CONFIG } from "./constants";
 
 /**
  * Browser environment detection
@@ -20,10 +20,34 @@ export const isGtagAvailable = (): boolean => {
 };
 
 /**
- * Validate GA4 measurement ID format
+ * Check if a dataLayer array exists on window under the given name
+ */
+export const isDataLayerAvailable = (
+  dataLayerName: string = DEFAULT_CONFIG.DATA_LAYER_NAME
+): boolean => {
+  return (
+    isBrowser() &&
+    Array.isArray((window as unknown as Record<string, unknown>)[dataLayerName])
+  );
+};
+
+/**
+ * Validate GA4 measurement ID format (`G-XXXXXXXXXX`)
  */
 export const validateMeasurementId = (measurementId: string): boolean => {
   return VALIDATION_PATTERNS.MEASUREMENT_ID.test(measurementId);
+};
+
+/**
+ * Validate GA4 measurement ID format (`G-XXXXXXXXXX`)
+ */
+export const isValidMeasurementId = validateMeasurementId;
+
+/**
+ * Validate GTM container ID format (`GTM-XXXXXXX`)
+ */
+export const isValidGtmId = (gtmId: string): boolean => {
+  return VALIDATION_PATTERNS.GTM_ID.test(gtmId);
 };
 
 /**
