@@ -586,7 +586,7 @@ function App() {
 
 Pass a GTM container ID as `gtmId` to load the container with `gtm.js`. This is Google's official GTM snippet, not the GA4 `gtag.js` tag. Every hook then pushes its events to `window.dataLayer`, and your container decides which tags fire.
 
-> **Migrating?** If you were passing `GTM-…` as `measurementId`, switch to `gtmId`. That setup loaded the Google tag instead of your container, never fired `gtm.js`, and sent a meaningless `gtag('config', 'GTM-…')`. In v1.2.0, passing a GTM ID as `measurementId` throws an error.
+> **Migrating?** If you were passing `GTM-…` as `measurementId`, switch to `gtmId`. That setup loaded the Google tag instead of your container, never fired `gtm.js`, and sent a meaningless `gtag('config', 'GTM-…')`. In v2.0.0, passing a GTM ID as `measurementId` throws an error.
 
 ### GTM only: React / Vite
 

@@ -3,7 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: ["src/index.ts"],
   tsconfig: "tsconfig.build.json",
-  format: ["esm"],
+  format: ["esm", "cjs"],
   target: "es2019",
   sourcemap: true,
   clean: false, // dist/*.d.ts is emitted separately by tsc before this runs

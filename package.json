@@ -3,14 +3,19 @@
   "version": "2.0.0",
   "description": "A modern, type-safe, and performance-optimized Google Analytics 4 (GA4) tracking library for React and Next.js applications. Features comprehensive ecommerce tracking, automatic event batching, SSR support, and production-ready error handling. Built with TypeScript for enterprise-grade reliability.",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "files": [
@@ -19,7 +24,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json --emitDeclarationOnly && tsup",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json --emitDeclarationOnly && tsup && node scripts/fix-dts.mjs",
     "type-check": "tsc --noEmit",
     "test": "vitest run"
   },

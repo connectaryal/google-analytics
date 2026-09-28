@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## [1.2.0] - 2026-09-28
+## [2.0.0] - 2026-09-28
 
 ### Added
 
@@ -22,7 +22,7 @@ All notable changes to this project are documented in this file.
 - `GA4Config` is now a deprecated alias of `GAConfig`.
 - ID formats are validated. `measurementId` must match `/^G-[A-Z0-9]+$/` and `gtmId` must match `/^GTM-[A-Z0-9]+$/`. `VALIDATION_PATTERNS.MEASUREMENT_ID` was loosened from exactly 10 characters to match.
 
-### Breaking for misconfigured apps
+### Breaking changes
 
 - Passing a GTM container ID as `measurementId` now throws: *"This is a GTM container ID. Pass it as `gtmId`, not `measurementId`."* Before, it loaded the Google tag instead of the container. Switch to `gtmId`.
 - A `measurementId` that isn't in `G-XXXXXXXXXX` format now throws at construction time.

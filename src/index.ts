@@ -27,4 +27,4 @@ export {
 export type { DataLayer, GTMEnvironmentOptions } from "./utils/gtm";
 
 // Version
-export const version = "1.2.0";
+export const version = "2.0.0";
